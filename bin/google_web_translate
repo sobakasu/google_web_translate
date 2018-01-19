@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'bundler/setup'
+require 'google_web_translate'
+require 'google_web_translate/cli'
+
+GoogleWebTranslate::CLI.start(ARGV.dup.unshift('translate'))
