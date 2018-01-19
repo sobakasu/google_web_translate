@@ -1,11 +1,12 @@
 require 'net/http'
 
 module GoogleWebTranslate
+  # HTTP client functionality
   class HTTPClient
     def self.user_agent
       gem_version = "GoogleWebTranslate/#{VERSION}"
       platform_version = "(#{RUBY_PLATFORM}) #{RUBY_ENGINE}/#{RUBY_VERSION}"
-      gem_version + " " + platform_version
+      gem_version + ' ' + platform_version
     end
 
     def initialize(options = {})

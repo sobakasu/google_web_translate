@@ -2,6 +2,7 @@ require 'execjs'
 require 'json'
 
 module GoogleWebTranslate
+  # interface to the google web translation api
   class API
     def initialize(options = {})
       @dt = options[:dt] || DEFAULT_DT
@@ -108,20 +109,10 @@ module GoogleWebTranslate
       tk = tk(string)
       debug("tk: #{tk}")
       query = {
-        sl: from,
-        tl: to,
-        ie: 'UTF-8',
-        oe: 'UTF-8',
-        q: string,
-        dt: @dt,
-        tk: tk,
+        sl: from, tl: to, ie: 'UTF-8', oe: 'UTF-8',
+        q: string, dt: @dt, tk: tk,
         # not sure what these are for
-        client: 't',
-        hl: 'en',
-        otf: 1,
-        ssel: 4,
-        tsel: 6,
-        kc: 5
+        client: 't', hl: 'en', otf: 1, ssel: 4, tsel: 6, kc: 5
       }
       url = URI.parse(URL_TRANSLATE_1)
       url.query = URI.encode_www_form(query)

@@ -1,6 +1,7 @@
 require 'thor'
 
 module GoogleWebTranslate
+  # Command line interface
   class CLI < Thor
     desc 'string from to', 'translate a string from one language to another'
     method_option :dt, type: :array, desc: 'data types'

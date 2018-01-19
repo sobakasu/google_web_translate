@@ -1,24 +1,30 @@
 module GoogleWebTranslate
+  # Translation results
   class Result
     attr_reader :raw
 
-    attr_reader :translation
-    attr_reader :alternatives
-    attr_reader :dictionary
-    attr_reader :examples
+    # @private
+    DATA_INDICES = {
+      translation: [0, 0, 0], # dt:t
+      alternatives: [5, 0, 2], # dt:at
+      dictionary: [1], # dt: bd
+      synonyms: [11], # dt:ss
+      definitions: [12, 0], # dt:md
+      examples: [13, 0], # dt:ex
+      see_also: [14, 0], # dt:rw
+    }.freeze
+
+    DATA_INDICES.each_key { |key| attr_reader key }
 
     def initialize(data)
       @raw = data
       @keys = []
       @properties = {}
 
-      extract_data(:translation, 0, 0, 0) # dt:t
-      extract_data(:alternatives, 5, 0, 2) # dt:at
-      extract_data(:dictionary, 1) # dt: bd
-      extract_data(:synonyms, 11) # dt:ss
-      extract_data(:definitions, 12, 0) # dt:md
-      extract_data(:examples, 13, 0) # dt:ex
-      extract_data(:see_also, 14, 0) # dt:rw
+      DATA_INDICES.each do |key, indices|
+        indices = indices.dup
+        extract_data(key, *indices)
+      end
 
       @alternatives = @alternatives.collect { |i| i[0] } if @alternatives
       @keys.each { |key| @properties[key] = instance_variable_get("@#{key}") }

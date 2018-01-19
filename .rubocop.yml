@@ -1,0 +1,9 @@
+Metrics/BlockLength:
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+
+Style/MixinUsage:
+  Exclude:
+    - 'spec/**/*.rb'

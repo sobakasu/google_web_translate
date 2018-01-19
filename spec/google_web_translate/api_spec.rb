@@ -1,7 +1,7 @@
 RSpec.describe GoogleWebTranslate::API do
   it 'generates the correct token' do
     api = described_class.new(debug: ENV['DEBUG'])
-    stub_requests(api)
+    stub_requests
 
     string = 'hello'
     expected_token = '550246.919607'
@@ -11,7 +11,7 @@ RSpec.describe GoogleWebTranslate::API do
 
   it 'returns data from the api' do
     api = described_class.new(debug: ENV['DEBUG'])
-    stub_requests(api)
+    stub_requests
 
     string = 'right'
     from = 'en'
@@ -22,7 +22,7 @@ RSpec.describe GoogleWebTranslate::API do
     expect(result.alternatives).to eq(%w[Recht richtig rechts])
   end
 
-  def stub_requests(api)
+  def stub_requests
     html_response = fixture_read('main.html')
     json_response = fixture_read('single.json')
     desktop_js_response = fixture_read('desktop_module_main.js')
@@ -33,18 +33,11 @@ RSpec.describe GoogleWebTranslate::API do
     stub_url_request(/desktop_module_main.js/, desktop_js_response)
     # third request: to google api
     stub_url_request(/translate_a/, json_response)
-
-    #allow(api).to receive(:fetch_url_response)
-    #  .and_return(response1, response2, response3)
   end
 
   def stub_url_request(url, response_body)
-    stub_request(:get, url).
-          with(headers: test_http_headers).
-          to_return(status: 200, body: response_body, headers: {})
-
-    #response = double(:response)
-    #allow(response).to receive(:body).and_return(response_body)
-    #response
+    stub_request(:get, url)
+      .with(headers: test_http_headers)
+      .to_return(status: 200, body: response_body, headers: {})
   end
 end
