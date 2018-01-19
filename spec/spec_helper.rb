@@ -4,8 +4,8 @@ SimpleCov.start do
 end
 
 require 'bundler/setup'
-# require 'webmock/rspec'
-# include WebMock::API
+require 'webmock/rspec'
+include WebMock::API
 
 require 'google_web_translate'
 
@@ -26,7 +26,8 @@ def fixture_read(path)
 end
 
 def test_http_headers
-  { 'Accept' => '*/*', 'Accept-Encoding' => 'gzip, deflate',
+  { 'Accept' => '*/*',
+    'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
     'Host' => 'translate.google.com',
-    'User-Agent' => 'rest-client/2.0.2 (darwin17.3.0 x86_64) ruby/2.4.1p111' }
+    'User-Agent' => GoogleWebTranslate::HTTPClient.user_agent }
 end

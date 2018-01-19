@@ -1,6 +1,5 @@
 require 'execjs'
 require 'json'
-require 'rest-client'
 
 module GoogleWebTranslate
   class API
@@ -8,7 +7,7 @@ module GoogleWebTranslate
       @dt = options[:dt] || DEFAULT_DT
       @token_ttl = options[:token_ttl] || DEFAULT_TOKEN_TTL
       @debug = options[:debug]
-      @user_agent = options[:user_agent] || DEFAULT_USER_AGENT
+      @http_client = options[:http_client] || HTTPClient.new(options)
     end
 
     def translate(string, from, to)
@@ -22,7 +21,6 @@ module GoogleWebTranslate
     URL_TRANSLATE_1 = URL_MAIN + '/translate_a/single'.freeze
     DEFAULT_DT = %w[at bd ex ld md qca rw rm ss t].freeze
     DEFAULT_TOKEN_TTL = 3600
-    DEFAULT_USER_AGENT = "GoogleWebTranslate #{VERSION}".freeze
 
     def fetch_translation(string, from, to)
       json = fetch_url_body(translate_url(string, from, to))
@@ -31,7 +29,7 @@ module GoogleWebTranslate
     end
 
     def fetch_url_response(url)
-      RestClient.get(url.to_s)
+      @http_client.get(url.to_s)
     end
 
     def fetch_url_body(url)
