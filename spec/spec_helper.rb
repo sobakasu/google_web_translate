@@ -31,3 +31,7 @@ def test_http_headers
     'Host' => 'translate.google.com',
     'User-Agent' => GoogleWebTranslate::HTTPClient.user_agent }
 end
+
+def allow_net_connections?
+  ENV['TEST_NETWORK'] || ENV['TRAVIS_EVENT_TYPE'] == 'cron'
+end

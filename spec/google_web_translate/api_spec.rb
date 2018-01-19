@@ -1,5 +1,9 @@
 RSpec.describe GoogleWebTranslate::API do
+
   it 'generates the correct token' do
+    # this test only works with fixture data
+    skip("unknown token for live network test") if allow_net_connections?
+
     api = described_class.new(debug: ENV['DEBUG'])
     stub_requests
 
@@ -23,6 +27,11 @@ RSpec.describe GoogleWebTranslate::API do
   end
 
   def stub_requests
+    if allow_net_connections?
+      WebMock.allow_net_connect!
+      return
+    end
+
     html_response = fixture_read('main.html')
     json_response = fixture_read('single.json')
     desktop_js_response = fixture_read('desktop_module_main.js')
