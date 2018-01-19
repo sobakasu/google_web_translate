@@ -1,3 +1,7 @@
+[![Documentation](http://img.shields.io/badge/yard-docs-blue.svg)](http://www.rubydoc.info/gems/google_web_translate)
+[![Gem Version](https://badge.fury.io/rb/google_web_translate.svg)](https://badge.fury.io/rb/google_web_translate)
+[![Build Status](https://travis-ci.org/sobakasu/google_web_translate.svg?branch=master)](https://travis-ci.org/sobakasu/google_web_translate)
+
 # GoogleWebTranslate
 
 Translates text using the Google translate web interface.
