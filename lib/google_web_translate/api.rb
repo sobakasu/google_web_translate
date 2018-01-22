@@ -94,13 +94,13 @@ module GoogleWebTranslate
     end
 
     def extract_tkk(html)
-      raise 'TKK not found' unless html =~ /TKK=.*?\{(.*?)\}/
+      raise 'TKK not found' unless html =~ /TKK=eval\('(.*?)'\);/
       tkk_code = Regexp.last_match(1)
       # tkk_code = Translatomatic::StringEscaping.unescape(tkk_code)
       tkk_code = StringEscaping.unescape(tkk_code)
       debug("tkk code unescaped: #{tkk_code}")
-      context = ExecJS.compile(tkk_code)
-      tkk = context.call(nil)
+      tkk = ExecJS.eval(tkk_code)
+      #tkk = context.call(nil)
       debug("evaluated tkk: #{tkk}")
       tkk
     end

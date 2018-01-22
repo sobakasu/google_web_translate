@@ -1,4 +1,5 @@
 require 'thor'
+require 'pp'
 
 module GoogleWebTranslate
   # Command line interface
@@ -11,7 +12,7 @@ module GoogleWebTranslate
 
       api = API.new(api_options)
       result = api.translate(string, from, to)
-      p result.to_h
+      pp result.to_h
     end
   end
 end
