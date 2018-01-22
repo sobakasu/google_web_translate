@@ -16,6 +16,13 @@ module GoogleWebTranslate
       Result.new(data)
     end
 
+    def languages
+      @languages ||= begin
+        html = fetch_main
+        html.scan(/\['(\w{2})','\w{2}'\]/).flatten.sort.uniq
+      end
+    end
+
     private
 
     URL_MAIN = 'https://translate.google.com'.freeze
@@ -46,8 +53,9 @@ module GoogleWebTranslate
       @token_updated_at && Time.now - @token_updated_at < @token_ttl
     end
 
-    def fetch_main
-      fetch_url_body(URL_MAIN)
+    def fetch_main(options = {})
+      @html = nil if options[:no_cache]
+      @html ||= fetch_url_body(URL_MAIN)
     end
 
     def fetch_desktop_module(html)
@@ -73,7 +81,7 @@ module GoogleWebTranslate
 
     def update_token
       # download main page
-      html = fetch_main
+      html = fetch_main(no_cache: true)
       # extract tkk from html
       @tkk = extract_tkk(html)
       # compile desktop module javascript
