@@ -100,7 +100,7 @@ module GoogleWebTranslate
       tkk_code = StringEscaping.unescape(tkk_code)
       debug("tkk code unescaped: #{tkk_code}")
       tkk = ExecJS.eval(tkk_code)
-      #tkk = context.call(nil)
+      # tkk = context.call(nil)
       debug("evaluated tkk: #{tkk}")
       tkk
     end

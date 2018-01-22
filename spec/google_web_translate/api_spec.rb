@@ -1,8 +1,7 @@
 RSpec.describe GoogleWebTranslate::API do
-
   it 'generates the correct token' do
     # this test only works with fixture data
-    skip("unknown token for live network test") if allow_net_connections?
+    skip('unknown token for live network test') if allow_net_connections?
 
     api = described_class.new(debug: ENV['DEBUG'])
     stub_requests
