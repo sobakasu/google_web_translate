@@ -19,7 +19,7 @@ module GoogleWebTranslate
     def languages
       @languages ||= begin
         html = fetch_main
-        html.scan(/\['(\w{2})','\w{2}'\]/).flatten.sort.uniq
+        html.scan(/\['(\w{2})','(\w{2})'\]/).flatten.uniq.sort
       end
     end
 
