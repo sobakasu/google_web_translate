@@ -4,7 +4,7 @@ require 'json'
 
 module GoogleWebTranslate
   # @private
-  SERVER_ATTRIBUTES = %i[host ip resolved_at last_request_at
+  SERVER_ATTRIBUTES = %i[host ip resolved_at last_used_at
                          counter available].freeze
 
   Server = Struct.new(*SERVER_ATTRIBUTES) do
@@ -22,7 +22,7 @@ module GoogleWebTranslate
         @servers.dup
       end
 
-      def next_server
+      def next_server(rate_limit = nil)
         @mutex ||= Mutex.new
         @mutex.synchronize do
           @counter ||= 0
@@ -31,8 +31,20 @@ module GoogleWebTranslate
           list = servers.sort_by { |i| i.counter || 0 }
           server = list[0]
           server.counter = @counter
+          sleep(rate_limit_delay(server, rate_limit))
+          server.last_used_at = Time.now
           server
         end
+      end
+
+      private
+
+      MAX_TTL = 86_400
+
+      def rate_limit_delay(server, rate_limit)
+        return 0 unless rate_limit && server.last_used_at
+        delay = rate_limit - (Time.now - server.last_used_at)
+        (delay < 0 || ENV['TEST']) ? 0 : delay
       end
 
       def update_servers
@@ -62,10 +74,6 @@ module GoogleWebTranslate
         # puts "server #{server.host} is unavailable: #{e}"
         server.available = false
       end
-
-      private
-
-      MAX_TTL = 86_400
 
       def data_dir
         File.join(__dir__, '..', '..', 'data')

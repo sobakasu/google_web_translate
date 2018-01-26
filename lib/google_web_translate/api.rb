@@ -33,11 +33,9 @@ module GoogleWebTranslate
     DEFAULT_RATE_LIMIT = 5
 
     def fetch_translation(string, from, to)
-      server = ServerList.next_server
-      sleep(rate_limit_delay(server))
-      server.last_request_at = Time.now
+      server = ServerList.next_server(@rate_limit)
       json = fetch_url_body(translate_url(server, string, from, to))
-      # File.open("response.json", "w") { |f| f.puts json }
+      # File.write("response.json", json) if debug?
       debug("response: #{json}")
       JSON.parse(json)
     end
@@ -52,12 +50,6 @@ module GoogleWebTranslate
       debug("fetch #{uri}")
       response = fetch_url_response(uri)
       response.body
-    end
-
-    def rate_limit_delay(server)
-      return 0 unless server.last_request_at
-      delay = @rate_limit - (Time.now - server.last_request_at) + 1
-      (delay < 0 || ENV['TEST']) ? 0 : delay
     end
 
     def valid_token?
@@ -86,7 +78,7 @@ module GoogleWebTranslate
       desktop_module_js = munge_module(fetch_desktop_module(html))
       window_js = File.read(File.join(__dir__, '..', 'js', 'window.js'))
       js = window_js + desktop_module_js
-      # File.open('generated.js', 'w') { |f| f.puts(js) } if debug?
+      # File.write('generated.js', js) if debug?
       ExecJS.compile(js)
     end
 
