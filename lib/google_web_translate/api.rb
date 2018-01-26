@@ -9,6 +9,7 @@ module GoogleWebTranslate
       @token_ttl = options[:token_ttl] || DEFAULT_TOKEN_TTL
       @debug = options[:debug]
       @http_client = options[:http_client] || HTTPClient.new(options)
+      @rate_limit = options[:rate_limit] || DEFAULT_RATE_LIMIT
     end
 
     def translate(string, from, to)
@@ -26,13 +27,18 @@ module GoogleWebTranslate
     private
 
     URL_MAIN = 'https://translate.google.com'.freeze
-    URL_TRANSLATE_1 = URL_MAIN + '/translate_a/single'.freeze
+    TRANSLATE_PATH = '/translate_a/single'.freeze
     DEFAULT_DT = %w[at bd ex ld md qca rw rm ss t].freeze
     DEFAULT_TOKEN_TTL = 3600
+    DEFAULT_RATE_LIMIT = 5
 
     def fetch_translation(string, from, to)
-      json = fetch_url_body(translate_url(string, from, to))
+      server = ServerList.next_server
+      sleep(rate_limit_delay(server))
+      server.last_request_at = Time.now
+      json = fetch_url_body(translate_url(server, string, from, to))
       # File.open("response.json", "w") { |f| f.puts json }
+      debug("response: #{json}")
       JSON.parse(json)
     end
 
@@ -45,8 +51,13 @@ module GoogleWebTranslate
       uri = URI.join(URL_MAIN, url) if uri.relative?
       debug("fetch #{uri}")
       response = fetch_url_response(uri)
-      # debug("response: #{response.body}")
       response.body
+    end
+
+    def rate_limit_delay(server)
+      return 0 unless server.last_request_at
+      delay = @rate_limit - (Time.now - server.last_request_at) + 1
+      (delay < 0 || ENV['TEST']) ? 0 : delay
     end
 
     def valid_token?
@@ -75,7 +86,7 @@ module GoogleWebTranslate
       desktop_module_js = munge_module(fetch_desktop_module(html))
       window_js = File.read(File.join(__dir__, '..', 'js', 'window.js'))
       js = window_js + desktop_module_js
-      File.open('generated.js', 'w') { |f| f.puts(js) } if debug?
+      # File.open('generated.js', 'w') { |f| f.puts(js) } if debug?
       ExecJS.compile(js)
     end
 
@@ -113,7 +124,7 @@ module GoogleWebTranslate
       tkk
     end
 
-    def translate_url(string, from, to)
+    def translate_url(server, string, from, to)
       tk = tk(string)
       debug("tk: #{tk}")
       query = {
@@ -122,9 +133,10 @@ module GoogleWebTranslate
         # not sure what these are for
         client: 't', hl: 'en', otf: 1, ssel: 4, tsel: 6, kc: 5
       }
-      url = URI.parse(URL_TRANSLATE_1)
-      url.query = URI.encode_www_form(query)
-      url.to_s
+      url = "https://#{server.host}" + TRANSLATE_PATH
+      uri = URI.parse(url)
+      uri.query = URI.encode_www_form(query)
+      uri.to_s
     end
 
     def debug(msg)

@@ -12,7 +12,7 @@ RSpec.describe GoogleWebTranslate::API do
     expect(token).to eq(expected_token)
   end
 
-  it 'returns data from the api' do
+  it 'translates a string' do
     api = described_class.new(debug: ENV['DEBUG'])
     stub_requests
 
@@ -23,6 +23,21 @@ RSpec.describe GoogleWebTranslate::API do
     result = api.translate(string, from, to)
     expect(result.translation).to eq('Recht')
     expect(result.alternatives).to eq(%w[Recht richtig rechts])
+  end
+
+  it 'translates two strings' do
+    api = described_class.new(debug: ENV['DEBUG'])
+    stub_requests
+
+    strings = ['right', 'right']
+    from = 'en'
+    to = 'de'
+
+    strings.each do |string|
+      result = api.translate(string, from, to)
+      expect(result.translation).to eq('Recht')
+      expect(result.alternatives).to eq(%w[Recht richtig rechts])
+    end
   end
 
   it 'returns a list of supported languages' do
