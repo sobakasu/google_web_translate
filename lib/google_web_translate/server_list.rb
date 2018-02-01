@@ -44,7 +44,7 @@ module GoogleWebTranslate
       def rate_limit_delay(server, rate_limit)
         return 0 unless rate_limit && server.last_used_at
         delay = rate_limit - (Time.now - server.last_used_at)
-        (delay < 0 || ENV['TEST']) ? 0 : delay
+        delay < 0 || ENV['TEST'] ? 0 : delay
       end
 
       def update_servers

@@ -29,7 +29,7 @@ RSpec.describe GoogleWebTranslate::API do
     api = described_class.new(debug: ENV['DEBUG'])
     stub_requests
 
-    strings = ['right', 'right']
+    strings = %w[right right]
     from = 'en'
     to = 'de'
 
@@ -45,7 +45,7 @@ RSpec.describe GoogleWebTranslate::API do
     stub_requests
 
     result = api.languages
-    expect(result).to eq(["af", "am", "ar", "az", "be", "bg", "bn", "bs", "ca", "co", "cs", "cy", "da", "de", "el", "en", "eo", "es", "et", "eu", "fa", "fi", "fr", "fy", "ga", "gd", "gl", "gu", "ha", "hi", "hr", "ht", "hu", "hy", "id", "ig", "is", "it", "iw", "ja", "jw", "ka", "kk", "km", "kn", "ko", "ku", "ky", "la", "lb", "lo", "lt", "lv", "mg", "mi", "mk", "ml", "mn", "mr", "ms", "mt", "my", "ne", "nl", "no", "ny", "or", "pa", "pl", "ps", "pt", "ro", "ru", "rw", "sd", "si", "sk", "sl", "sm", "sn", "so", "sq", "sr", "st", "su", "sv", "sw", "ta", "te", "tg", "th", "tk", "tl", "tr", "tt", "ug", "uk", "ur", "uz", "vi", "xh", "yi", "yo", "zh", "zu"])
+    expect(result).to eq(%w[af am ar az be bg bn bs ca co cs cy da de el en eo es et eu fa fi fr fy ga gd gl gu ha hi hr ht hu hy id ig is it iw ja jw ka kk km kn ko ku ky la lb lo lt lv mg mi mk ml mn mr ms mt my ne nl no ny or pa pl ps pt ro ru rw sd si sk sl sm sn so sq sr st su sv sw ta te tg th tk tl tr tt ug uk ur uz vi xh yi yo zh zu])
   end
 
   def stub_requests

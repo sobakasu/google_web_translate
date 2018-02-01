@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'webmock'
 
+  spec.add_dependency 'concurrent-ruby'
   spec.add_dependency 'execjs'
   spec.add_dependency 'thor'
-  spec.add_dependency 'concurrent-ruby'
 end

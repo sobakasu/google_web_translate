@@ -2,7 +2,7 @@ RSpec.describe GoogleWebTranslate::ServerList do
   context '#servers' do
     it 'returns a list of servers' do
       servers = server_list
-      #p servers
+      # p servers
       expect(servers).to be
       expect(servers.length).to be > 1
     end
@@ -14,11 +14,9 @@ RSpec.describe GoogleWebTranslate::ServerList do
       last_server = nil
       (count * 2).times do
         server = next_server
-        #puts "server: #{server}"
+        # puts "server: #{server}"
         expect(server).to be
-        if last_server
-          expect(server.ip).to_not eq(last_server.ip)
-        end
+        expect(server.ip).to_not eq(last_server.ip) if last_server
         last_server = server
       end
     end
