@@ -29,8 +29,8 @@ RSpec.describe GoogleWebTranslate::ServerList do
       now = Time.now
       expected_delay = 3
       next_server(expected_delay)
-      actual_delay = (Time.now - now).to_i
-      expect(actual_delay).to eq(expected_delay)
+      actual_delay = Time.now - now
+      expect(actual_delay).to be_within(0.5).of(expected_delay)
     end
   end
 
