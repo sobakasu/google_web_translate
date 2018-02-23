@@ -1,4 +1,5 @@
 require 'google_web_translate/version.rb'
+require 'google_web_translate/server.rb'
 require 'google_web_translate/server_list.rb'
 require 'google_web_translate/string_escaping.rb'
 require 'google_web_translate/http_client.rb'

@@ -33,7 +33,9 @@ module GoogleWebTranslate
     DEFAULT_RATE_LIMIT = 5
 
     def fetch_translation(string, from, to)
+      debug('getting next server')
       server = ServerList.next_server(@rate_limit)
+      debug("using server #{server}")
       json = fetch_url_body(translate_url(server, string, from, to))
       # File.write("response.json", json) if debug?
       debug("response: #{json}")
@@ -79,7 +81,14 @@ module GoogleWebTranslate
       window_js = File.read(File.join(__dir__, '..', 'js', 'window.js'))
       js = window_js + desktop_module_js
       # File.write('generated.js', js) if debug?
+      @tk_function = detect_tk_function(desktop_module_js)
+      debug("detected tk function: #{@tk_function}")
       ExecJS.compile(js)
+    end
+
+    def detect_tk_function(js)
+      js =~ /translate_tts.*,\s*(\w+)\(.*\)/
+      Regexp.last_match(1) || 'vq'
     end
 
     def update_token
@@ -96,7 +105,7 @@ module GoogleWebTranslate
       update_token unless valid_token?
       @js_context.call('setWindowProperty', 'TKK', @tkk)
       # tk = @js_context.call("wq", string)
-      tk = @js_context.call('generateToken', string, @tkk)
+      tk = @js_context.call(@tk_function, string)
       (tk.split('=') || [])[1]
     end
 

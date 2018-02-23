@@ -3,17 +3,6 @@ require 'resolv'
 require 'json'
 
 module GoogleWebTranslate
-  # @private
-  SERVER_ATTRIBUTES = %i[host ip resolved_at last_used_at
-                         counter available].freeze
-
-  Server = Struct.new(*SERVER_ATTRIBUTES) do
-    def to_json(*args)
-      result = {}
-      each_pair { |key, value| result[key] = value }
-      result.to_json(args)
-    end
-  end
 
   class ServerList
     class << self
@@ -65,7 +54,7 @@ module GoogleWebTranslate
       def update_server(server)
         now = Time.now.to_i
         if server.resolved_at.nil? ||
-           now - server.resolved_at > MAX_TTL || !server.available
+           now - server.resolved_at > MAX_TTL #|| !server.available
           server.resolved_at = now
           server.ip = resolve_ip(server.host)
         end
