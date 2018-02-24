@@ -103,9 +103,7 @@ module GoogleWebTranslate
 
     def tk(string)
       update_token unless valid_token?
-      @js_context.call('setWindowProperty', 'TKK', @tkk)
-      # tk = @js_context.call("wq", string)
-      tk = @js_context.call(@tk_function, string)
+      tk = @js_context.call('generateToken', @tk_function, @tkk, string)
       (tk.split('=') || [])[1]
     end
 
