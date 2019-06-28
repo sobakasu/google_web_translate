@@ -8,8 +8,8 @@
 /tmp/
 /generated.js
 /spec.out
-/Gemfile.lock
 /data/server_data.txt
+/vendor
 
 # rspec failure tracking
 .rspec_status
